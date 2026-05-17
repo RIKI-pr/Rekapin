@@ -1503,15 +1503,6 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
               </span>
             )}
 
-            {/* Done Badge */}
-            {isDoneTask && (
-              <span
-                className="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider border shrink-0 shadow-sm flex items-center gap-1 bg-emerald-50 text-emerald-600 border-emerald-200"
-              >
-                <CheckCircle size={10} strokeWidth={3.5} />
-                Selesai
-              </span>
-            )}
 
             {/* Top-Right Corner Type Badge (Only rendered for non-task items, keeping UI clean for tasks) */}
             {!act.isTask && (
