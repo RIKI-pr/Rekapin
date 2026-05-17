@@ -5968,8 +5968,8 @@ export default function App() {
           onSendMessage={handleAddChatMessage}
         />
         <div className={cn(
-          "navbot-container fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 px-5 pb-safe-offset-2 pt-1.5 pb-3 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] z-[420] transition-all duration-300",
-          isInputFocused ? "translate-y-28 opacity-0 pointer-events-none" : "translate-y-0"
+          "navbot-container fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 px-5 pb-safe-offset-2 pt-1.5 pb-3 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] z-[420]",
+          isInputFocused ? "hidden" : "block"
         )}>
           <div className="flex justify-around items-center h-14">
             {/* Home Tab */}
