@@ -115,6 +115,18 @@ const getPercentage = (part: number, total: number) => {
   if (!total || total === 0) return 0;
   return Math.min(Math.round((part / total) * 100), 100);
 };
+
+const toTitleCase = (str: string) => {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map((word) => {
+      if (!word) return "";
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(" ");
+};
 const getMemberNameSafe = (team: any, id: string, defaultName = "Anggota") => {
   if (id === "shared" || id === "all") return "Keluarga";
   if (!team || !team.members) return defaultName;
@@ -1007,10 +1019,10 @@ const NotificationPanel = ({ isOpen, onClose, data }: any) => {
               {data.transactions.slice(0, 8).map((t: any) => (
                 <div
                   key={t.id}
-                  className="p-4 bg-white border border-slate-200 rounded-[22px] hover:border-blue-200 hover:bg-blue-50/30 transition-all shadow-sm group cursor-pointer"
+                  className="p-3.5 bg-white border border-slate-200 rounded-[16px] hover:border-blue-200 hover:bg-blue-50/30 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.03)] group cursor-pointer"
                 >
-                  <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-2xl overflow-hidden border border-slate-200 shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-300">
+                  <div className="flex gap-3">
+                    <div className="w-9 h-9 rounded-xl overflow-hidden border border-slate-200 shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-300">
                       <img
                         src={
                           data.team.members.find((m: any) => m.id === t.owner)
@@ -1029,18 +1041,18 @@ const NotificationPanel = ({ isOpen, onClose, data }: any) => {
                                 (m: any) => m.id === t.owner,
                               )?.name}
                         </span>
-                        mencatat{" "}
+                        {" "}mencatat{" "}
                         <span className="font-bold text-blue-600">
                           {t.title}
                         </span>
-                        sebesar{" "}
+                        {" "}sebesar{" "}
                         <span className="font-extrabold">
                           {formatCurrency(t.amount)}
                         </span>
                       </p>
-                      <p className="text-[11px] text-slate-400 mt-1.5 font-bold flex items-center gap-1">
+                      <p className="text-[11px] text-slate-400 mt-1 font-bold flex items-center gap-1">
                         <Clock size={10} />
-                        {t.time}    Baru saja
+                        {t.time} • Baru saja
                       </p>
                     </div>
                   </div>
@@ -1049,8 +1061,8 @@ const NotificationPanel = ({ isOpen, onClose, data }: any) => {
             </div>
           </div>
         </div>
-        <div className="p-5 border-t border-slate-100 bg-slate-50/50">
-          <button className="w-full py-4 bg-white border border-slate-200 rounded-[18px] text-[13px] font-extrabold text-slate-600 hover:bg-slate-100 transition-colors shadow-sm">
+        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
+          <button className="w-full py-3 bg-white border border-slate-200 rounded-[16px] text-[13px] font-bold text-slate-600 hover:bg-slate-50 transition-colors shadow-sm">
             Tandai Semua Sudah Dibaca
           </button>
         </div>
@@ -1193,15 +1205,15 @@ const TransactionCard = ({ trx, team, budgets, onOpenDetail, onOpenComments }: a
   };
   return (
     <div
-      className="bg-white p-5 rounded-[22px] shadow-[0_2px_10px_rgba(0,0,0,0.04)] border border-slate-200 mb-3.5 relative z-10 group cursor-pointer active:scale-[0.98] transition-all"
+      className="rounded-[16px] p-3.5 border transition-all relative overflow-hidden group cursor-pointer active:scale-[0.99] shadow-sm select-none bg-white border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:border-slate-300/80 mb-3 z-10"
       onClick={() => onOpenDetail(trx, trx.type)}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3">
         {/* Ikon Kiri */}
         <div className="relative shrink-0 mt-0.5">
           <div
             className={cn(
-              "w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm",
+              "w-9 h-9 rounded-xl flex items-center justify-center border shadow-sm",
               trx.type === "income"
                 ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                 : trx.type === "transfer"
@@ -1209,21 +1221,21 @@ const TransactionCard = ({ trx, team, budgets, onOpenDetail, onOpenComments }: a
                   : "bg-rose-50 text-rose-600 border-rose-100",
             )}
           >
-            <IconRenderer name={trx.icon} size={22} />
+            <IconRenderer name={trx.icon} size={16} />
           </div>
-          <div className="absolute -bottom-1.5 -right-1.5 w-5.5 h-5.5 rounded-full overflow-hidden border-2 border-white shadow-md flex items-center justify-center bg-white">
-            <OwnerAvatar ownerId={trx.owner} size={5} teamData={team} />
+          <div className="absolute -bottom-1 -right-1 w-4.5 h-4.5 rounded-full overflow-hidden border border-white shadow flex items-center justify-center bg-white">
+            <OwnerAvatar ownerId={trx.owner} size={4} teamData={team} />
           </div>
         </div>
         {/* Konten Tengah */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start">
-            <p className="text-[15px] font-bold text-slate-900 truncate pr-2">
-              {trx.title}
+            <p className="text-[14px] font-bold text-slate-900 truncate pr-2">
+              {toTitleCase(trx.title)}
             </p>
             <p
               className={cn(
-                "text-[16px] font-extrabold tracking-tight font-outfit",
+                "text-[15px] font-extrabold tracking-tight font-outfit whitespace-nowrap shrink-0",
                 trx.type === "income" ? "text-emerald-600" : "text-rose-600",
               )}
             >
@@ -1231,21 +1243,21 @@ const TransactionCard = ({ trx, team, budgets, onOpenDetail, onOpenComments }: a
               {formatCurrency(trx.amount)}
             </p>
           </div>
-          <div className="flex justify-between items-center mt-0.5 mb-1">
-            <p className="text-[12px] font-normal text-slate-500 truncate flex items-center gap-1">
-              <CreditCard size={12} className="text-slate-400" />
+          <div className="flex justify-between items-center mt-0.5 mb-1.5">
+            <p className="text-[11px] font-normal text-slate-500 truncate flex items-center gap-1">
+              <CreditCard size={11} className="text-slate-400" />
               {trx.pocket}
             </p>
-            <p className="text-[11px] font-bold text-slate-900">{trx.time}</p>
+            <p className="text-[11px] font-medium text-slate-400">{trx.time}</p>
           </div>
           {/* Baris Badge & Tombol Bawah */}
-          <div className="flex justify-between items-end mt-1">
-            <div className="flex flex-col gap-1.5 items-start">
+          <div className="flex justify-between items-center mt-1.5 pt-1.5 border-t border-slate-100/40">
+            <div className="flex flex-wrap gap-1 items-center">
               {/* 1. Badge Kategori / Anggaran */}
               {budgetMatch ? (
                 <span
                   className={cn(
-                    "px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit border",
+                    "px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit border shadow-sm",
                     getCatColor(trx.category),
                   )}
                 >
@@ -1255,7 +1267,7 @@ const TransactionCard = ({ trx, team, budgets, onOpenDetail, onOpenComments }: a
               ) : (
                 <span
                   className={cn(
-                    "px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit border",
+                    "px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit border shadow-sm",
                     getCatColor(trx.category),
                   )}
                 >
@@ -1267,25 +1279,24 @@ const TransactionCard = ({ trx, team, budgets, onOpenDetail, onOpenComments }: a
               {trx.isActivity && trx.location && (
                 <span className="px-2 py-0.5 rounded-md text-[9px] font-bold text-amber-600 bg-amber-50 border border-amber-200 flex items-center gap-1 uppercase tracking-wider w-fit shadow-sm">
                   <MapPin size={10} strokeWidth={2.5} />
-                  {trx.location}
+                  {trx.location.toUpperCase()}
                 </span>
               )}
             </div>
-            <div className="flex flex-col items-end gap-1.5">
-              {/* Tombol Dropdown Komen (Balas) */}
+            <div className="flex items-center shrink-0">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   if (onOpenComments) onOpenComments("transaction", trx.id);
                 }}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg transition-colors border shadow-sm ${
-                  hasComments 
-                    ? "text-blue-600 bg-blue-50 border-blue-100 hover:bg-blue-100" 
-                    : "text-slate-400 bg-slate-50 border-slate-200 hover:bg-slate-100"
-                }`}
+                className="focus:outline-none z-30"
               >
-                <MessageCircle size={12} />
-                {hasComments && <span className="text-[11px] font-bold">{trx.comments.length}</span>}
+                <div
+                  className="flex items-center justify-center gap-1 px-2.5 py-1 rounded-xl transition-all border shadow-sm active:scale-95 text-center text-blue-600 bg-blue-50 border-blue-100"
+                >
+                  <MessageCircle size={13} strokeWidth={2.5} className="shrink-0" />
+                  {hasComments && <span className="text-[10px] font-extrabold leading-none">{trx.comments.length}</span>}
+                </div>
               </button>
             </div>
           </div>
@@ -1295,7 +1306,7 @@ const TransactionCard = ({ trx, team, budgets, onOpenDetail, onOpenComments }: a
   );
 };
 // --- KOMPONEN ITEM AKTIVITAS SATUAN (AMAN & PROFESIONAL) ---
-const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTaskStatus }: any) => {
+const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTaskStatus, selectedDate }: any) => {
   // Custom type mapping
   const colors: Record<string, any> = {
     Olahraga: { bg: "bg-emerald-500", text: "text-emerald-600", light: "bg-emerald-50", border: "border-emerald-200" },
@@ -1320,6 +1331,22 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
   // Clean 24-hour format time string
   const time24 = (act.timeStart || "").replace(/(?:[ ]?(?:AM|PM|am|pm))/gi, "").trim();
 
+  // Safe Indonesian date formatter for deadlines
+  const formattedDeadlineDate = (() => {
+    if (!act.refItem || !act.refItem.date) return "";
+    try {
+      const d = new Date(act.refItem.date);
+      if (isNaN(d.getTime())) return act.refItem.date;
+      const months = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+      return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    } catch (err) {
+      return act.refItem.date;
+    }
+  })();
+
   // Determine if task deadline is overdue or within time
   const isOverdue = (() => {
     if (!act.isTask || act.priority !== "Tinggi" || isDoneTask) return false;
@@ -1337,11 +1364,16 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
     if (isDoneTask) {
       return "bg-slate-50/50 border-slate-200 opacity-60 hover:bg-slate-50/70";
     }
-    if (isOverdue) {
-      return "bg-rose-50/80 border-rose-200 hover:bg-rose-100/40 shadow-[0_4px_16px_rgba(244,63,94,0.06)] hover:border-rose-300";
-    }
-    if (isWithinTime) {
-      return "bg-amber-50/80 border-amber-200 hover:bg-amber-100/40 shadow-[0_4px_16px_rgba(245,158,11,0.06)] hover:border-amber-300";
+    if (act.isTask) {
+      if (act.priority === "Tinggi") {
+        return "bg-rose-50/80 border-rose-200 hover:bg-rose-100/40 shadow-[0_4px_16px_rgba(244,63,94,0.06)] hover:border-rose-300";
+      }
+      if (act.priority === "Sedang") {
+        return "bg-amber-50/80 border-amber-200 hover:bg-amber-100/40 shadow-[0_4px_16px_rgba(245,158,11,0.06)] hover:border-amber-300";
+      }
+      if (act.priority === "Rendah") {
+        return "bg-blue-50/80 border-blue-200 hover:bg-blue-100/40 shadow-[0_4px_16px_rgba(59,130,246,0.06)] hover:border-blue-300";
+      }
     }
     return "bg-white border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:border-slate-300/80";
   })();
@@ -1349,15 +1381,16 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
   return (
     <div className="relative z-10 animate-in fade-in duration-200">
       {/* Time Label - Perfectly Centered Vertically with the Top Row Avatar */}
-      <div className="absolute -left-[90px] top-[26px] w-[60px] text-right">
-        <p
-          className={cn(
-            "text-[13px] font-black font-outfit tracking-tight leading-tight",
-            isDoneTask ? "text-slate-300" : "text-slate-900",
-          )}
-        >
-          {time24}
-        </p>
+      <div className="absolute -left-[90px] top-[22px] w-[60px] text-right flex flex-col justify-center items-end select-none">
+        {act.isTask && act.status !== "selesai" ? (
+          <span className="text-[20px] font-black font-outfit text-slate-900 tracking-tight leading-none pr-1">
+            {act.dateInt}
+          </span>
+        ) : (
+          <p className="text-[13px] font-black font-outfit tracking-tight leading-tight text-slate-900 mt-1">
+            {time24}
+          </p>
+        )}
       </div>
 
       {/* Timeline Node - Perfectly Centered Vertically with the Top Row Avatar and Mathematically Aligned with the Vertical Line */}
@@ -1368,38 +1401,34 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
             ? "bg-slate-300"
             : isDeadline
               ? isOverdue
-                ? "bg-rose-500 animate-pulse"
-                : "bg-amber-500 animate-pulse"
+                ? "bg-rose-500"
+                : "bg-amber-500"
               : isRegularTask
                 ? "bg-emerald-500"
                 : typeColor.bg,
         )}
       >
-        {isDeadline ? (
-          <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping opacity-75" />
-        ) : (
-          <div className="w-1 h-1 bg-white rounded-full opacity-60" />
-        )}
+        <div className="w-1 h-1 bg-white rounded-full opacity-60" />
       </div>
 
       {/* Main Card - Perfectly Matched to Transaction Card Styles */}
       <div
         onClick={() => onOpenDetail(act.refItem, act.isTask ? "task" : "activity")}
         className={cn(
-          "rounded-[22px] p-5 border transition-all relative overflow-hidden group cursor-pointer active:scale-[0.99] shadow-sm select-none",
+          "rounded-[16px] p-3.5 border transition-all relative overflow-hidden group cursor-pointer active:scale-[0.99] shadow-sm select-none",
           cardStyle
         )}
       >
         {/* Top Header Row: Owner Avatar and Name in Corner, Type Badge on Right */}
-        <div className="flex justify-between items-center mb-3.5">
+        <div className="flex justify-between items-center mb-2">
           <div className="flex items-center gap-2">
             <OwnerAvatar
               ownerId={act.owner}
-              size={6}
+              size={5}
               showBorder={false}
               teamData={team}
             />
-            <span className="text-[11px] font-extrabold text-slate-500 font-outfit uppercase tracking-wider">
+            <span className="text-[10px] font-extrabold text-slate-500 font-outfit uppercase tracking-wider">
               {team.members.find((m: any) => m.id === act.owner)?.name.split(" ")[0] || "Saya"}
             </span>
           </div>
@@ -1424,6 +1453,18 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
               >
                 <AlertCircle size={10} strokeWidth={3.5} />
                 {act.priority}
+              </span>
+            )}
+
+            {/* Category Badge for Tasks */}
+            {act.isTask && act.refItem.category && (
+              <span
+                className={cn(
+                  "px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider border shrink-0 shadow-sm flex items-center gap-1",
+                  getCategoryColor(act.refItem.category).replace("border-100", "border-200")
+                )}
+              >
+                {act.refItem.category}
               </span>
             )}
 
@@ -1452,34 +1493,36 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
         </div>
 
         {/* Content Area */}
-        <div className="space-y-2.5">
+        <div className="space-y-1">
           {/* Middle Row: Checkbox on Left, Title/Desc Column on Right */}
-          <div className="flex items-start gap-3 relative">
+          <div className="flex items-start gap-2 relative">
             {act.isTask && (
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  if (onToggleTaskStatus) onToggleTaskStatus(act.refItem.id);
+                  if (onToggleTaskStatus) onToggleTaskStatus(act.refItem.id, selectedDate);
                 }}
-                className="w-12 h-12 -ml-3 -mt-2.5 flex items-center justify-center cursor-pointer transition-all active:scale-90 shrink-0 z-30 select-none bg-transparent focus:outline-none"
+                className="w-7 h-7 -ml-0.5 flex items-center justify-center cursor-pointer transition-all active:scale-90 shrink-0 z-30 select-none bg-transparent focus:outline-none"
               >
                 <div
                   className={cn(
-                    "w-[26px] h-[26px] rounded-full border-2 flex items-center justify-center transition-all duration-300 shadow-sm relative overflow-hidden",
+                    "w-[18px] h-[18px] rounded-full border flex items-center justify-center transition-all duration-300 shadow-sm relative overflow-hidden",
                     isDoneTask
-                      ? "bg-emerald-500 border-emerald-500 text-white shadow-[0_3px_10px_rgba(16,185,129,0.35)] scale-[1.05]"
-                      : isOverdue
+                      ? "bg-emerald-500 border-emerald-500 text-white shadow-[0_2px_6px_rgba(16,185,129,0.3)]"
+                      : act.priority === "Tinggi"
                         ? "border-rose-400 bg-white"
-                        : isWithinTime
-                          ? "border-amber-400 bg-white"
-                          : "border-slate-300 bg-white",
+                        : act.priority === "Sedang"
+                          ? "border-amber-500 bg-white"
+                          : act.priority === "Rendah"
+                            ? "border-blue-400 bg-white"
+                            : "border-slate-300 bg-white",
                   )}
                 >
                   {/* High contrast sharp checkmark with rotation when active */}
                   <Check 
-                    size={13} 
+                    size={10} 
                     strokeWidth={4.5} 
                     className={cn(
                       "transition-all duration-300 transform", 
@@ -1491,94 +1534,86 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
             )}
 
             {/* Title & Description Column */}
-            <div className="flex-1 min-w-0 space-y-1.5">
+            <div className="flex-1 min-w-0 space-y-0.5">
               <h4
                 className={cn(
-                  "text-[15px] font-bold tracking-tight leading-tight transition-colors",
+                  "text-[14px] font-bold tracking-tight leading-tight transition-colors",
                   isDoneTask
                     ? "line-through text-slate-400 font-medium"
-                    : isOverdue
-                      ? "text-rose-950 font-extrabold"
-                      : isWithinTime
-                        ? "text-amber-950 font-extrabold"
-                        : "text-slate-900",
+                    : "text-slate-900",
                 )}
               >
-                {act.title}
+                {toTitleCase(act.title)}
               </h4>
 
               {/* Description inside the shifted column */}
               {act.desc && (
                 <p
                   className={cn(
-                    "text-[12px] font-normal leading-relaxed transition-colors",
+                    "text-[11px] font-normal leading-relaxed transition-colors",
                     isDoneTask
                       ? "text-slate-400"
-                      : isOverdue
-                        ? "text-rose-700/80 font-medium"
-                        : isWithinTime
-                          ? "text-amber-700/80 font-medium"
-                          : "text-slate-500"
+                      : "text-slate-500"
                   )}
                 >
-                  {act.desc}
+                  {toTitleCase(act.desc)}
                 </p>
               )}
             </div>
           </div>
 
           {/* Bottom Row: Location & Actions (Comments, detail views) */}
-          <div className="flex justify-between items-center pt-1">
-            <div className="flex flex-wrap gap-2">
+          <div className="flex justify-between items-center pt-1 mt-0.5 border-t border-slate-100/30">
+            <div className="flex flex-wrap gap-1.5 items-center">
               {act.location && !act.isTask && (
                 <span className="px-2 py-0.5 rounded-md text-[9px] font-bold text-amber-600 bg-amber-50 border border-amber-200 flex items-center gap-1 uppercase tracking-wider w-fit shadow-sm">
                   <MapPin size={10} strokeWidth={2.5} />
-                  {act.location}
+                  {act.location.toUpperCase()}
                 </span>
               )}
               {act.isTask && (
-                <span
-                  className={cn(
-                    "px-2 py-0.5 rounded-md text-[9px] font-extrabold flex items-center gap-1 uppercase tracking-wider w-fit shadow-sm border transition-colors",
-                    isDoneTask
-                      ? "bg-slate-100 text-slate-400 border-slate-200"
-                      : isOverdue
-                        ? "bg-rose-100 text-rose-700 border-rose-300 animate-pulse"
-                        : "bg-amber-100 text-amber-700 border-amber-300"
+                <>
+                  <span
+                    className={cn(
+                      "px-2 py-0.5 rounded-md text-[9px] font-extrabold flex items-center gap-1 tracking-wider w-fit shadow-sm border transition-colors",
+                      isDoneTask
+                        ? "bg-slate-100 text-slate-400 border-slate-200"
+                        : "bg-purple-50 text-purple-700 border-purple-200"
+                    )}
+                  >
+                    <CalendarIcon size={10} strokeWidth={2.5} className={isDoneTask ? "text-slate-400" : "text-purple-500"} />
+                    <span>DL : {formattedDeadlineDate.toUpperCase()}</span>
+                  </span>
+                  {act.refItem.location && (
+                    <span className="px-2 py-0.5 rounded-md text-[9px] font-bold text-amber-600 bg-amber-50 border border-amber-200 flex items-center gap-1 uppercase tracking-wider w-fit shadow-sm">
+                      <MapPin size={10} strokeWidth={2.5} />
+                      {act.refItem.location.toUpperCase()}
+                    </span>
                   )}
-                >
-                  <Clock size={10} strokeWidth={2.5} />
-                  {isDeadline ? `DEADLINE: JAM ${time24}` : `TARGET TUGAS: JAM ${time24}`}
-                </span>
+                </>
               )}
             </div>
 
-            <div className="flex items-center gap-1.5 ml-auto">
+            <div className="flex items-center shrink-0">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                   if (onOpenComments) onOpenComments("activity", act.id);
                 }}
-                className={cn(
-                  "flex items-center gap-1 px-3 py-1.5 rounded-xl transition-all border shadow-sm active:scale-95 hover:scale-105 z-20",
-                  isDoneTask
-                    ? "text-slate-400 bg-slate-50 border-slate-200 hover:bg-slate-100"
-                    : isOverdue
-                      ? hasComments
-                        ? "text-rose-700 bg-rose-100 border-rose-300 hover:bg-rose-200"
-                        : "text-rose-500 bg-white border-rose-200 hover:bg-rose-50/50"
-                      : isWithinTime
-                        ? hasComments
-                          ? "text-amber-700 bg-amber-100 border-amber-300 hover:bg-amber-200"
-                          : "text-amber-500 bg-white border-amber-200 hover:bg-amber-50/50"
-                        : hasComments
-                          ? "text-blue-600 bg-blue-50 border-blue-100 hover:bg-blue-100"
-                          : "text-slate-400 bg-slate-50 border-slate-200 hover:bg-slate-100"
-                )}
+                className="focus:outline-none z-30"
               >
-                <MessageCircle size={13} strokeWidth={2.5} />
-                {hasComments && <span className="text-[11px] font-extrabold">{act.comments.length}</span>}
+                <div
+                  className={cn(
+                    "flex items-center justify-center gap-1 px-2.5 py-1 rounded-xl transition-all border shadow-sm active:scale-95 text-center",
+                    isDoneTask
+                      ? "text-slate-400 bg-slate-50 border-slate-200"
+                      : "text-blue-600 bg-blue-50 border-blue-100"
+                  )}
+                >
+                  <MessageCircle size={13} strokeWidth={2.5} className="shrink-0" />
+                  {hasComments && <span className="text-[10px] font-extrabold leading-none">{act.comments.length}</span>}
+                </div>
               </button>
             </div>
           </div>
@@ -2122,7 +2157,7 @@ const ItemDetailModal = ({
     if (isDebt)
       return item.type === "payable" ? "Detail Hutang" : "Detail Piutang";
     if (isTrx) return "Detail Transaksi";
-    if (isTask) return "Detail Tugas";
+    if (isTask) return "Detail Task";
     if (isAct) return "Detail Aktivitas";
     return "Detail";
   };
@@ -2174,7 +2209,7 @@ const ItemDetailModal = ({
                 <OwnerAvatar ownerId={item.owner} size={8} teamData={team} />
               </div>
               <h3 className="text-[20px] font-extrabold text-slate-900 leading-tight mb-2 pr-6">
-                {item.title}
+                {toTitleCase(item.title)}
               </h3>
               <p
                 className={cn(
@@ -2223,7 +2258,7 @@ const ItemDetailModal = ({
                     <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Lokasi</span>
                     <span className="font-bold text-slate-900 flex items-center gap-1 text-right max-w-[180px] truncate">
                       <MapPin size={12} className="text-rose-500" />
-                      {item.location}
+                      {item.location.toUpperCase()}
                     </span>
                   </div>
                 )}
@@ -2399,7 +2434,7 @@ const ItemDetailModal = ({
                     </div>
                   </div>
                   <h3 className="text-[22px] font-extrabold text-slate-900 leading-tight mb-1 pr-14">
-                    {item.title}
+                    {toTitleCase(item.title)}
                   </h3>
                   <p className="text-[13px] font-bold text-slate-400 flex items-center gap-1 mb-6 uppercase tracking-wider">
                     <User size={12} />
@@ -2460,7 +2495,7 @@ const ItemDetailModal = ({
                             : "bg-blue-50 text-blue-600 border-blue-200"
                       )}
                     >
-                      {modalIsDeadline ? "🚨 PERINGATAN" : modalIsRegularTask ? "📝 TUGAS" : item.type || item.category || "KEGIATAN"}
+                      {modalIsDeadline ? "🚨 PERINGATAN" : modalIsRegularTask ? "📝 TASK" : item.type || item.category || "KEGIATAN"}
                     </Badge>
                     {item.priority && (
                       <Badge
@@ -2478,10 +2513,10 @@ const ItemDetailModal = ({
                     )}
                   </div>
                   <h3 className="text-[22px] font-extrabold text-slate-900 leading-tight mb-3 pr-4">
-                    {item.title}
+                    {toTitleCase(item.title)}
                   </h3>
                   <p className="text-[13px] font-medium text-slate-600 mb-8 leading-relaxed bg-[#f8fafc] p-4 rounded-2xl border border-slate-200/60 italic">
-                    "{item.desc || "Tidak ada catatan tambahan."}"
+                    "{toTitleCase(item.desc || "Tidak ada catatan tambahan.")}"
                   </p>
                   <div className="space-y-4 pt-6 border-t border-slate-100">
                     <div className="flex justify-between items-center text-[13px]">
@@ -2499,7 +2534,7 @@ const ItemDetailModal = ({
                       </span>
                       <span className="font-extrabold text-slate-900 flex items-center gap-2">
                         <MapPin size={14} className="text-rose-500" />
-                        {isTask ? "Daftar Tugas (Task List)" : item.location || "Fleksibel"}
+                        {isTask ? "DAFTAR TASK (TASK LIST)" : (item.location || "FLEKSIBEL").toUpperCase()}
                       </span>
                     </div>
                   </div>
@@ -2861,7 +2896,7 @@ const HomeView = ({
         </p>
       </div>
       <div className="px-5 mt-5">
-        <div className="bg-white rounded-[22px] shadow-sm text-slate-900 relative overflow-hidden p-6 border border-slate-200 transition-all">
+        <div className="rounded-[20px] border border-slate-200 shadow-[0_2px_15px_rgba(0,0,0,0.04)] bg-white text-slate-900 relative overflow-hidden p-5 transition-all select-none">
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-[60px] -translate-y-1/3 translate-x-1/3"></div>
           <div className="relative z-10">
             <div className="flex justify-between items-start mb-4">
@@ -2896,32 +2931,32 @@ const HomeView = ({
         </div>
       </div>
       {urgentReminders.length > 0 && (
-        <div className="px-5 mt-8 text-slate-900">
+        <div className="px-5 mt-6 text-slate-900">
           <SectionHeader 
             title="Pengingat Penting" 
             icon={Bell} 
             action="Lihat Semua"
           />
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5">
             {urgentReminders.map((rem) => (
               <div
                 key={rem.id}
-                className="bg-white rounded-[22px] p-5 border border-slate-200 shadow-sm flex items-center gap-4 transition-all hover:border-blue-200 cursor-pointer group active:scale-[0.98]"
+                className="rounded-[16px] p-3.5 border transition-all relative overflow-hidden group cursor-pointer active:scale-[0.99] shadow-sm select-none bg-white border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:border-slate-300/80 flex items-center gap-3"
               >
                 <div
                   className={cn(
-                    "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0",
+                    "w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border shadow-sm",
                     rem.bg,
                     rem.color,
                   )}
                 >
-                  <rem.icon size={22} />
+                  <rem.icon size={16} />
                 </div>
-                <div className="flex-1">
-                  <p className="text-[14px] font-bold text-slate-900 leading-tight mb-1">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-bold text-slate-900 leading-tight mb-0.5 group-hover:text-blue-600 transition-colors">
                     {rem.title}
                   </p>
-                  <p className="text-[11px] font-medium text-slate-500">
+                  <p className="text-[11px] font-normal text-slate-500">
                     {rem.desc}
                   </p>
                 </div>
@@ -3684,12 +3719,12 @@ const FinanceView = ({
               <div
                 key={`pocket-${pocket.id}`}
                 onClick={() => onOpenDetail(pocket, "pocket")}
-                className="bg-white rounded-[22px] p-5 border border-slate-200 shadow-sm relative overflow-hidden group transition-all cursor-pointer active:scale-[0.98]"
+                className="bg-white rounded-[16px] p-4 border border-slate-200 shadow-[0_2px_12px_rgba(0,0,0,0.03)] relative overflow-hidden group transition-all cursor-pointer active:scale-[0.98]"
               >
-                <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                <div className="absolute top-3.5 right-3.5 flex flex-col items-end gap-1.5 z-20">
                   <OwnerAvatar
                     ownerId={pocket.owner}
-                    size={8}
+                    size={6}
                     teamData={data.team}
                   />
                   <Badge
@@ -3706,35 +3741,35 @@ const FinanceView = ({
                     {pocket.status}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-3.5 pr-12">
                   <div
                     className={cn(
-                      "w-12 h-12 rounded-2xl flex items-center justify-center",
+                      "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm border",
                       pocket.bg,
                       pocket.color,
                     )}
                   >
-                    <IconRenderer name={pocket.icon} size={24} />
+                    <IconRenderer name={pocket.icon} size={20} />
                   </div>
-                  <div>
-                    <p className="text-[16px] font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors truncate">
                       {pocket.name}
                     </p>
-                    <p className="text-[11px] font-medium text-slate-500 flex items-center gap-1 mt-0.5">
-                      <CreditCard size={12} />
+                    <p className="text-[11px] font-normal text-slate-500 flex items-center gap-1 mt-0.5 truncate">
+                      <CreditCard size={11} className="text-slate-400" />
                       {pocket.accountNo || "ID Tersembunyi"}
                     </p>
                   </div>
                 </div>
-                <p className="text-[28px] font-bold text-slate-900 tracking-tight mb-4">
+                <p className="text-[22px] font-extrabold text-slate-900 tracking-tight mb-3 font-outfit">
                   {formatCurrency(pocket.balance)}
                 </p>
-                <div className="flex justify-between items-center mt-4 pt-4 border-t border-slate-50">
+                <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-100/80">
                   <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
                     <RefreshCw size={10} />
                     Sync: {pocket.syncStatus || "Real-time"}
                   </span>
-                  <span className="text-[11px] font-bold text-slate-500">
+                  <span className="text-[11px] font-bold text-slate-500 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md">
                     {(
                       (pocket.balance /
                         syncedPockets.reduce((s, p) => s + p.balance, 0)) *
@@ -3764,9 +3799,9 @@ const FinanceView = ({
                 <div
                   key={`budget-${b.id}`}
                   onClick={() => onOpenDetail(b, "budget")}
-                  className="bg-white rounded-[22px] p-5 border border-slate-200 shadow-sm relative cursor-pointer transition-all group active:scale-[0.98]"
+                  className="bg-white rounded-[16px] p-3.5 border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.03)] relative cursor-pointer transition-all group active:scale-[0.98]"
                 >
-                  <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                  <div className="absolute top-3.5 right-3.5 flex flex-col items-end gap-1.5 z-20">
                     <OwnerAvatar
                       ownerId={b.owner}
                       size={6}
@@ -3784,28 +3819,28 @@ const FinanceView = ({
                           : "Aman"}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-3 mb-4 pr-10">
+                  <div className="flex items-center gap-3 mb-3.5 pr-20">
                     <div
                       className={cn(
-                        "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0",
+                        "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border shadow-sm",
                         b.bg,
                         b.color,
                       )}
                     >
                       <IconRenderer name={b.icon} size={20} />
                     </div>
-                    <div>
-                      <h4 className="text-[15px] font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
+                    <div className="min-w-0">
+                      <h4 className="text-[14px] font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors truncate">
                         {b.name}
                       </h4>
-                      <div className="flex items-center gap-1.5 mt-1.5">
+                      <div className="flex items-center gap-1 mt-1">
                         <span
                           className={cn(
-                            "px-2 py-0.5 rounded-md text-[9.5px] font-bold uppercase tracking-wider flex items-center gap-1 border",
+                            "px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 border shadow-sm",
                             getCategoryColor(b.category),
                           )}
                         >
-                          <Tag size={10} strokeWidth={2.5} />
+                          <Tag size={9} strokeWidth={2.5} />
                           {b.category}
                         </span>
                       </div>
@@ -3820,7 +3855,7 @@ const FinanceView = ({
                       {formatCurrency(Math.max(0, b.limit - b.spent))}
                     </span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full overflow-hidden h-2.5 shadow-inner border border-slate-200/50">
+                  <div className="w-full bg-slate-100/80 rounded-full overflow-hidden h-2 shadow-inner border border-slate-200/50">
                     <div
                       className={cn(
                         "h-full rounded-full transition-all duration-1000 ease-out",
@@ -3835,12 +3870,12 @@ const FinanceView = ({
                       }}
                     />
                   </div>
-                  <div className="flex justify-between items-center mt-4 pt-3 border-t border-slate-50">
+                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-100/80">
                     <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
                       <CalendarClock size={10} />
                       Reset dlm {b.resetDays || 26} hari
                     </span>
-                    <span className="text-[11px] font-bold text-slate-700">
+                    <span className="text-[11px] font-bold text-slate-700 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md">
                       {pct}%
                     </span>
                   </div>
@@ -3858,12 +3893,12 @@ const FinanceView = ({
                 Catat Hutang / Piutang Baru
               </span>
             </div>
-            <div className="flex items-center justify-between bg-white border border-slate-200 p-4 rounded-[22px] shadow-sm">
+            <div className="flex items-center justify-between bg-white border border-slate-200 p-3.5 rounded-[16px] shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
               <div>
-                <span className="px-1.5 py-0.5 rounded-md text-[8px] font-bold text-amber-700 bg-amber-50 border border-amber-200 uppercase tracking-wider w-fit shadow-sm mb-1 inline-block">
+                <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-200 uppercase tracking-wider w-fit shadow-sm mb-1 inline-block">
                   Total Harus Dibayar
                 </span>
-                <p className="text-[22px] font-bold text-slate-900 font-outfit">
+                <p className="text-[22px] font-extrabold text-slate-900 font-outfit">
                   {formatCurrency(
                     activeDebts
                       .filter((d) => d.type === "payable")
@@ -3871,8 +3906,8 @@ const FinanceView = ({
                   )}
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center border border-amber-100">
-                <AlertTriangle size={20} className="text-amber-500" />
+              <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-100 shadow-sm shrink-0">
+                <AlertTriangle size={18} className="text-amber-500" />
               </div>
             </div>
             {activeDebts.map((debt) => {
@@ -3887,9 +3922,9 @@ const FinanceView = ({
                 <div
                   key={`debt-${debt.id}`}
                   onClick={() => onOpenDetail(debt, "debt")}
-                  className="bg-white rounded-[22px] p-5 border border-slate-200 shadow-sm relative cursor-pointer transition-all group active:scale-[0.98]"
+                  className="bg-white rounded-[16px] p-3.5 border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.03)] relative cursor-pointer transition-all group active:scale-[0.98]"
                 >
-                  <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                  <div className="absolute top-3.5 right-3.5 flex flex-col items-end gap-1.5 z-20">
                     <OwnerAvatar
                       ownerId={debt.owner}
                       size={6}
@@ -3907,8 +3942,8 @@ const FinanceView = ({
                       {isOverdue ? "Jatuh Tempo" : debt.status}
                     </Badge>
                   </div>
-                  <div className="mb-4">
-                    <div className="flex gap-1.5 mb-2">
+                  <div className="mb-3.5">
+                    <div className="flex gap-1 mb-2">
                       <Badge
                         variant={isHutang ? "danger" : "success"}
                         className="inline-flex"
@@ -3925,13 +3960,13 @@ const FinanceView = ({
                         </Badge>
                       )}
                     </div>
-                    <h4 className="text-[16px] font-bold text-slate-900 leading-tight pr-20 group-hover:text-blue-600 transition-colors">
+                    <h4 className="text-[14px] font-bold text-slate-900 leading-tight pr-24 group-hover:text-blue-600 transition-colors">
                       {debt.title}
                     </h4>
-                    <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-1.5">
-                      <User size={12} />
+                    <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-1">
+                      <User size={11} className="text-slate-400" />
                       {isHutang ? "Ke:" : "Dari:"}
-                      <b>{debt.person}</b>
+                      <span className="font-semibold text-slate-700">{debt.person}</span>
                     </p>
                   </div>
                   <ProgressBar
@@ -3940,7 +3975,7 @@ const FinanceView = ({
                     label={`Dibayar: ${formatCurrency(debt.paid)}`}
                     labelRight={`Total: ${formatCurrency(debt.amount)}`}
                   />
-                  <div className="flex justify-between items-center mt-4 pt-3 border-t border-slate-50">
+                  <div className="flex justify-between items-center mt-3.5 pt-3 border-t border-slate-100/80">
                     <div>
                       <span className="text-[11px] font-bold text-slate-500 block">
                         Sisa:{" "}
@@ -3955,13 +3990,13 @@ const FinanceView = ({
                     </div>
                     <div
                       className={cn(
-                        "text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1",
+                        "text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1 shadow-sm border",
                         isOverdue
-                          ? "bg-rose-50 text-rose-600"
-                          : "bg-slate-50 text-slate-500",
+                          ? "bg-rose-50 border-rose-100 text-rose-600"
+                          : "bg-slate-50 border-slate-100 text-slate-500",
                       )}
                     >
-                      <CalendarIcon size={12} />
+                      <CalendarIcon size={11} />
                       {isOverdue
                         ? "Terlewat!"
                         : `${daysLeft} Hari Lagi`}
@@ -4207,76 +4242,131 @@ const ActivityView = ({
     (t) => isAll || t.owner === activeOwner || t.owner === "shared",
   );
 
-  const rawTimelineData = [
-    ...activeTrx.map((t) => ({
-      id: `act-trx-${t.id}`,
-      owner: t.owner,
-      title: t.title,
-      timeStart: t.time || "00:00",
-      location: t.location || "",
-      type: "Makan",
-      desc: `Tercatat ${formatCurrency(t.amount)}`,
-      color: "bg-orange-500",
-      dateInt: t.dateInt || 4,
-      isTask: false,
-      comments: t.comments,
-      refItem: t,
-    })),
-    ...activeActs.map((a) => ({
-      id: `act-evt-${a.id}`,
-      owner: a.owner,
-      title: a.title,
-      timeStart: a.timeStart || "00:00",
-      location: a.location || "",
-      type: a.type || "Aktivitas Harian",
-      desc: a.desc,
-      color: a.color || "bg-blue-500",
-      dateInt: a.dateInt || 4,
-      isTask: false,
-      comments: a.comments,
-      refItem: a,
-    })),
-    ...activeTasks.map((t) => ({
-      id: `act-tsk-${t.id}`,
-      owner: t.owner,
-      title: t.title,
-      timeStart: t.time || "00:00",
-      location: "Daftar Tugas",
-      type: "Kerja",
-      desc: t.desc,
-      color:
-        t.priority === "Tinggi"
-          ? "bg-rose-500"
-          : t.category === "Pekerjaan"
-            ? "bg-blue-600"
-            : "bg-amber-500",
-      dateInt: t.dateInt || 4,
-      isTask: true,
-      status: t.status,
-      priority: t.priority,
-      category: t.category,
-      comments: t.comments,
-      refItem: t,
-    })),
-  ]
-    .filter((item) => item.dateInt === selectedDate)
-    .sort((a, b) => (b.timeStart || "").localeCompare(a.timeStart || ""));
+  const { dailyIncome, dailyExpense } = useMemo(() => {
+    let income = 0;
+    let expense = 0;
+    (data.transactions || []).forEach((t: any) => {
+      if ((isAll || t.owner === activeOwner || t.owner === "shared") && t.dateInt === selectedDate) {
+        if (t.type === "income") {
+          income += t.amount || 0;
+        } else if (t.type === "expense") {
+          expense += t.amount || 0;
+        }
+      }
+    });
+    return { dailyIncome: income, dailyExpense: expense };
+  }, [data.transactions, isAll, activeOwner, selectedDate]);
 
-  // Filter based on search input & category filter pill
-  const timelineData = rawTimelineData.filter((item) => {
-    const matchesSearch =
-      item.title.toLowerCase().includes(actSearch.toLowerCase()) ||
-      (item.desc || "").toLowerCase().includes(actSearch.toLowerCase()) ||
-      (item.location || "").toLowerCase().includes(actSearch.toLowerCase());
-    
-    const matchesFilter =
-      actFilter === "all" ||
-      (actFilter === "trx" && item.id.startsWith("act-trx-")) ||
-      (actFilter === "event" && item.id.startsWith("act-evt-")) ||
-      (actFilter === "task" && item.id.startsWith("act-tsk-"));
-      
-    return matchesSearch && matchesFilter;
-  });
+  // 1. DATA TUGAS YANG BELUM SELESAI (UPCOMING/ACTIVE TASKS FOR THE ACTIVE MONTH)
+  const uncompletedTasksData = useMemo(() => {
+    return activeTasks
+      .filter((t) => t.status !== "selesai")
+      .map((t) => ({
+        id: `act-tsk-${t.id}`,
+        owner: t.owner,
+        title: t.title,
+        timeStart: t.time || "00:00",
+        location: t.location || "",
+        type: "Kerja",
+        desc: t.desc,
+        color:
+          t.priority === "Tinggi"
+            ? "bg-rose-500"
+            : t.category === "Pekerjaan"
+              ? "bg-blue-600"
+              : "bg-amber-500",
+        dateInt: t.dateInt || 4,
+        isTask: true,
+        status: t.status,
+        priority: t.priority,
+        category: t.category,
+        comments: t.comments,
+        refItem: t,
+      }))
+      .filter((item) => {
+        const matchesSearch =
+          item.title.toLowerCase().includes(actSearch.toLowerCase()) ||
+          (item.desc || "").toLowerCase().includes(actSearch.toLowerCase());
+        const matchesFilter = actFilter === "all" || actFilter === "task";
+        return matchesSearch && matchesFilter;
+      })
+      .sort((a, b) => {
+        if (a.dateInt !== b.dateInt) {
+          return a.dateInt - b.dateInt;
+        }
+        return (a.timeStart || "").localeCompare(b.timeStart || "");
+      });
+  }, [activeTasks, actSearch, actFilter]);
+
+  // 2. DATA TIMELINE AKTIVITAS & TUGAS SELESAI (CHRONOLOGICAL TIMELINE FOR THE SELECTED DATE)
+  const completedTimelineData = useMemo(() => {
+    return [
+      ...activeTrx.map((t) => ({
+        id: `act-trx-${t.id}`,
+        owner: t.owner,
+        title: t.title,
+        timeStart: t.time || "00:00",
+        location: t.location || "",
+        type: "Makan",
+        desc: `Tercatat ${formatCurrency(t.amount)}`,
+        color: "bg-orange-500",
+        dateInt: t.dateInt || 4,
+        isTask: false,
+        comments: t.comments,
+        refItem: t,
+      })),
+      ...activeActs.map((a) => ({
+        id: `act-evt-${a.id}`,
+        owner: a.owner,
+        title: a.title,
+        timeStart: a.timeStart || "00:00",
+        location: a.location || "",
+        type: a.type || "Aktivitas Harian",
+        desc: a.desc,
+        color: a.color || "bg-blue-500",
+        dateInt: a.dateInt || 4,
+        isTask: false,
+        comments: a.comments,
+        refItem: a,
+      })),
+      ...activeTasks
+        .filter((t) => t.status === "selesai")
+        .map((t) => ({
+          id: `act-tsk-${t.id}`,
+          owner: t.owner,
+          title: t.title,
+          timeStart: t.time || "00:00",
+          location: t.location || "",
+          type: "Kerja",
+          desc: t.desc,
+          color: "bg-emerald-500",
+          dateInt: t.dateInt || 4,
+          isTask: true,
+          status: t.status,
+          priority: t.priority,
+          category: t.category,
+          comments: t.comments,
+          refItem: t,
+        })),
+    ]
+      .filter((item) => {
+        const matchesDate = item.dateInt === selectedDate;
+        
+        const matchesSearch =
+          item.title.toLowerCase().includes(actSearch.toLowerCase()) ||
+          (item.desc || "").toLowerCase().includes(actSearch.toLowerCase()) ||
+          (item.location || "").toLowerCase().includes(actSearch.toLowerCase());
+        
+        const matchesFilter =
+          actFilter === "all" ||
+          (actFilter === "trx" && item.id.startsWith("act-trx-")) ||
+          (actFilter === "event" && item.id.startsWith("act-evt-")) ||
+          (actFilter === "task" && item.id.startsWith("act-tsk-"));
+          
+        return matchesDate && matchesSearch && matchesFilter;
+      })
+      .sort((a, b) => (b.timeStart || "").localeCompare(a.timeStart || ""));
+  }, [activeTrx, activeActs, activeTasks, selectedDate, actSearch, actFilter]);
 
   const densityMap = useMemo(() => {
     const map = {};
@@ -4311,7 +4401,7 @@ const ActivityView = ({
             />
             <input
               type="text"
-              placeholder="Cari jadwal, tugas, atau kegiatan..."
+              placeholder="Cari jadwal, task, atau kegiatan..."
               value={actSearch}
               onChange={(e) => setActSearch(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-[18px] py-3.5 pl-11 pr-24 text-[13px] font-medium text-slate-600 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/50 transition-all shadow-sm"
@@ -4340,21 +4430,69 @@ const ActivityView = ({
           </div>
         </div>
 
-        {timelineData.length > 0 ? (
-          <div className="flex flex-col relative pl-[92px] pr-5 gap-4 mt-4 pb-10">
-            {/* Garis Vertikal Stylized - gradien 2 warna padat (abu-abu di atas, putih di bawah) tanpa transparan */}
-            <div className="absolute left-[72px] top-4 bottom-[20px] w-[2px] bg-gradient-to-b from-slate-300 via-slate-300 to-white z-0 rounded-full"></div>
-            {/* Mapping ActivityCardItem */}
-            {timelineData.map((act) => (
-              <ActivityCardItem
-                key={act.id}
-                act={act}
-                team={data.team}
-                onOpenDetail={onOpenDetail}
-                onOpenComments={onOpenComments}
-                onToggleTaskStatus={onToggleTaskStatus}
-              />
-            ))}
+        {(uncompletedTasksData.length > 0 || completedTimelineData.length > 0) ? (
+          <div className="flex flex-col gap-8 mt-4">
+            {/* 1. SEKSI TUGAS BULAN INI (BELUM SELESAI) */}
+            {uncompletedTasksData.length > 0 && (
+              <div className="flex flex-col">
+                <div className="flex justify-between items-end mb-2 pl-5 pr-5 select-none w-full">
+                  <h3 className="text-[13px] font-bold text-slate-500 uppercase tracking-wider">
+                    Pengingat Penting
+                  </h3>
+                  <div className="flex gap-2 text-[10px] font-bold">
+                    <span className="text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md">
+                      {uncompletedTasksData.length} Task Pending
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col relative pl-[92px] pr-5 gap-4 pb-2">
+                  {/* Stylized vertical timeline line for active tasks */}
+                  <div className="absolute left-[72px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-blue-300 via-blue-300 to-slate-200 z-0 rounded-full"></div>
+                  {uncompletedTasksData.map((act) => (
+                    <ActivityCardItem
+                      key={act.id}
+                      act={act}
+                      team={data.team}
+                      onOpenDetail={onOpenDetail}
+                      onOpenComments={onOpenComments}
+                      onToggleTaskStatus={onToggleTaskStatus}
+                      selectedDate={selectedDate}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 2. SEKSI AKTIVITAS & RIWAYAT HARI INI */}
+            {completedTimelineData.length > 0 && (
+              <div className="flex flex-col">
+                <div className="flex justify-between items-end mb-2 pl-5 pr-5 select-none w-full">
+                  <h3 className="text-[13px] font-bold text-slate-500 uppercase tracking-wider">
+                    Tanggal {selectedDate} Mei
+                  </h3>
+                  <div className="flex gap-2 text-[10px] font-bold">
+                    <span className="text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md">
+                      {completedTimelineData.length} Aktivitas
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col relative pl-[92px] pr-5 gap-4 pb-10">
+                  {/* Stylized vertical timeline line for completed/history */}
+                  <div className="absolute left-[72px] top-4 bottom-[20px] w-[2px] bg-gradient-to-b from-slate-300 via-slate-300 to-white z-0 rounded-full"></div>
+                  {completedTimelineData.map((act) => (
+                    <ActivityCardItem
+                      key={act.id}
+                      act={act}
+                      team={data.team}
+                      onOpenDetail={onOpenDetail}
+                      onOpenComments={onOpenComments}
+                      onToggleTaskStatus={onToggleTaskStatus}
+                      selectedDate={selectedDate}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="mx-5 text-center py-12 border-2 border-dashed border-slate-200 rounded-[24px] bg-white flex flex-col items-center">
@@ -4400,7 +4538,7 @@ const ActivityView = ({
                     { id: "all", label: "Semua", icon: Filter, activeClass: "bg-blue-600 border-blue-600 text-white shadow-blue-500/20" },
                     { id: "trx", label: "Transaksi", icon: TrendingUp, activeClass: "bg-orange-600 border-orange-600 text-white shadow-orange-500/20" },
                     { id: "event", label: "Kegiatan", icon: CalendarIcon, activeClass: "bg-blue-600 border-blue-600 text-white shadow-blue-500/20" },
-                    { id: "task", label: "Tugas", icon: CheckCircle, activeClass: "bg-emerald-600 border-emerald-600 text-white shadow-emerald-500/20" },
+                    { id: "task", label: "Task", icon: CheckCircle, activeClass: "bg-emerald-600 border-emerald-600 text-white shadow-emerald-500/20" },
                   ].map((item) => (
                     <button
                       key={item.id}
@@ -4447,117 +4585,207 @@ const ActivityView = ({
     </div>
   );
 };
-// --- View Ruang Obrolan Tim ---
-const TeamChatView = ({ data }) => {
-  const scrollRef = useRef(null);
+// --- Bottom Sheet Obrolan Tim "Ruang Kita" ---
+const TeamChatBottomSheet = ({ isOpen, data, onClose, onSendMessage }: any) => {
+  const [text, setText] = useState("");
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // Track dynamic visual viewport dimensions in real-time to match virtual keyboard
+  const [vvHeight, setVvHeight] = useState(window.innerHeight);
+  const [vvOffsetTop, setVvOffsetTop] = useState(0);
+
   useEffect(() => {
-    if (scrollRef.current)
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const update = () => {
+      setVvHeight(vv.height);
+      setVvOffsetTop(vv.offsetTop);
+    };
+
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    update();
+
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
   }, []);
+
+  // Auto scroll chat list to bottom when chats change or opened
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [data?.chats, isOpen]);
+
+  if (!isOpen) return null;
+
+  const sheetHeight = vvHeight; // Full height!
+
   return (
-    <div className="flex flex-col h-full bg-[#f8fafc] pb-[80px] animate-in fade-in duration-300">
-      <div className="px-5 pt-4 pb-3 bg-white border-b border-slate-100 flex items-center justify-between sticky top-0 z-10 rounded-t-[32px]">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white">
-            <MessageSquare size={20} />
-          </div>
-          <div>
-            <h2 className="text-[16px] font-extrabold text-slate-900 tracking-tight leading-none">
-              Ruang Kita
-            </h2>
-            <div className="flex items-center gap-1.5 mt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">
-                {data.team.members.length}
-                Aktif
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex -space-x-2">
-          {data.team.members.slice(0, 3).map((m: any) => (
-            <img
-              key={m.id}
-              src={m.avatar}
-              className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-sm"
-              alt="Mem"
-            />
-          ))}
-        </div>
-      </div>
+    <div 
+      style={{
+        position: "fixed",
+        left: 0,
+        top: `${vvOffsetTop}px`,
+        width: "100%",
+        height: `${vvHeight}px`,
+      }}
+      className="z-[500] flex items-end justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300"
+    >
+      {/* Backdrop Layer (Static dark blur layer, clicking backdrop is disabled per user request to only close via back button) */}
+      <div className="absolute inset-0" />
+
+      {/* Bottom Sheet Drawer — perfectly fitted inside Visual Viewport */}
       <div
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto px-5 py-6 flex flex-col gap-4"
+        ref={sheetRef}
+        style={{
+          height: `${sheetHeight}px`,
+        }}
+        className="relative w-full max-w-md bg-slate-100 rounded-t-none shadow-2xl flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
       >
-        <div className="text-center mb-2">
-          <span className="text-[10px] font-bold bg-slate-200 text-slate-500 px-3 py-1 rounded-full uppercase tracking-wider">
-            Hari ini
-          </span>
-        </div>
-        {data.chats.map((chat) => {
-          const isMe = chat.sender === "u1";
-          return (
-            <div key={`chat-${chat.id}`} className={cn(
-                "flex w-full",
-                isMe ? "justify-end" : "justify-start",
-              )}
+        {/* Header Obrolan Premium (No dragging, flat design, back button, title, stacked avatars & bottom border) */}
+        <div 
+          className="px-5 h-[64px] bg-white border-b border-slate-200 flex items-center justify-between sticky top-0 z-40 shrink-0 select-none"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              onClick={onClose}
+              className="w-10 h-10 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-600 shadow-sm active:scale-95 transition-all outline-none animate-in duration-100"
             >
-              <div
-                className={cn(
-                  "flex max-w-[80%] gap-2",
-                  isMe ? "flex-row-reverse" : "flex-row",
-                )}
-              >
-                <div className="shrink-0 mt-auto">
-                  <OwnerAvatar
-                    ownerId={chat.sender}
-                    size={8}
-                    teamData={data.team}
-                  />
-                </div>
-                <div
-                  className={cn(
-                    "p-3 rounded-[18px] shadow-sm relative",
-                    isMe
-                      ? "bg-blue-600 text-white rounded-br-sm"
-                      : "bg-white border border-slate-200 text-slate-800 rounded-bl-sm",
-                  )}
-                >
-                  {!isMe && (
-                    <p className="text-[10px] font-bold text-slate-400 mb-0.5">
-                      {getMemberNameSafe(data.team, chat.sender)}
-                    </p>
-                  )}
-                  <p className="text-[14px] leading-relaxed font-medium">
-                    {chat.text}
-                  </p>
-                  <p
-                    className={cn(
-                      "text-[9px] font-bold mt-1 text-right",
-                      isMe ? "text-blue-200" : "text-slate-400",
-                    )}
-                  >
-                    {chat.time}
-                  </p>
-                </div>
+              <ChevronLeft size={20} />
+            </button>
+            <div className="min-w-0">
+              <h2 className="text-[15px] font-extrabold text-slate-900 tracking-tight leading-none">
+                Ruang Kita
+              </h2>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest leading-none">
+                  {data.team.members.length} AKTIF
+                </p>
               </div>
             </div>
-          );
-        })}
-      </div>
-      <div className="p-4 bg-white border-t border-slate-200 absolute bottom-[80px] w-full max-w-md">
-        <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-full border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-          <button className="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-white hover:shadow-sm transition-all shrink-0">
-            <ImageIcon size={20} />
-          </button>
-          <input
-            type="text"
-            placeholder="Ketik pesan..."
-            className="flex-1 bg-transparent border-none outline-none text-[14px] font-medium text-slate-800 placeholder:text-slate-400 px-2"
-          />
-          <button className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md active:scale-95 transition-all shrink-0">
-            <Send size={18} className="ml-1" />
-          </button>
+          </div>
+          <div className="flex -space-x-2 shrink-0">
+            {data.team.members.map((m: any) => (
+              <img
+                key={m.id}
+                src={m.avatar}
+                className="w-8 h-8 rounded-full border-2 border-white object-cover shadow-sm"
+                alt={m.name}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Scrollable Chat Message List (No dragging / scroll interception) */}
+        <div
+          ref={listRef}
+          onScroll={(e) => e.stopPropagation()}
+          className="flex-1 overflow-y-auto px-5 py-6 flex flex-col gap-4 bg-slate-50/70"
+        >
+          <div className="text-center mb-2 select-none">
+            <span className="text-[10px] font-bold bg-slate-200/80 text-slate-500 px-3 py-1 rounded-full uppercase tracking-wider">
+              HARI INI
+            </span>
+          </div>
+
+          {data.chats.map((chat: any) => {
+            const isMe = chat.sender === "u1";
+            return (
+              <div
+                key={`chat-${chat.id}`}
+                className={cn(
+                  "flex w-full animate-in fade-in duration-200",
+                  isMe ? "justify-end" : "justify-start"
+                )}
+              >
+                <div
+                  className={cn(
+                    "flex max-w-[80%] gap-2",
+                    isMe ? "flex-row-reverse" : "flex-row"
+                  )}
+                >
+                  <div className="shrink-0 mt-auto select-none">
+                    <OwnerAvatar
+                      ownerId={chat.sender}
+                      size={8}
+                      teamData={data.team}
+                    />
+                  </div>
+                  <div
+                    className={cn(
+                      "p-3 rounded-[18px] shadow-sm relative border",
+                      isMe
+                        ? "bg-blue-600 border-transparent text-white rounded-br-sm"
+                        : "bg-white border-slate-200 text-slate-800 rounded-bl-sm"
+                    )}
+                  >
+                    {!isMe && (
+                      <p className="text-[10px] font-extrabold text-blue-600 mb-0.5 leading-none">
+                        {getMemberNameSafe(data.team, chat.sender)}
+                      </p>
+                    )}
+                    <p className="text-[13px] leading-relaxed font-medium break-all whitespace-pre-wrap">
+                      {chat.text}
+                    </p>
+                    <p
+                      className={cn(
+                        "text-[9px] font-bold mt-1 text-right tracking-tight opacity-75 select-none",
+                        isMe ? "text-blue-100" : "text-slate-400"
+                      )}
+                    >
+                      {chat.time}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Bottom Reply Bar - Anchored beautifully (FB & IG style) */}
+        <div 
+          className="p-4 bg-white border-t border-slate-100 flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] pb-safe-offset-4 shrink-0"
+        >
+          <OwnerAvatar ownerId="u1" size={8} teamData={data.team} />
+          <div className="flex-1 bg-slate-100/90 border border-slate-200 rounded-2xl flex items-center px-4 py-2.5 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 focus-within:bg-white transition-all">
+            <textarea
+              rows={1}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              placeholder="Tulis pesan..."
+              className="bg-transparent border-none outline-none w-full text-[13px] font-medium text-slate-700 resize-none h-[20px] py-0 leading-normal focus:ring-0"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  if (text.trim()) {
+                    onSendMessage(text.trim());
+                    setText("");
+                  }
+                }
+              }}
+            />
+            <button
+              onClick={() => {
+                if (text.trim()) {
+                  onSendMessage(text.trim());
+                  setText("");
+                }
+              }}
+              className="text-blue-600 hover:text-blue-700 active:scale-90 transition-all ml-2"
+            >
+              <Send size={16} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -5116,6 +5344,8 @@ const AddTaskForm = ({ isOpen, onClose, onSave, initialData }) => {
 
   const [category, setCategory] = useState("Pribadi");
 
+  const [location, setLocation] = useState("");
+
   const [desc, setDesc] = useState("");
   useEffect(() => {
     if (initialData && isOpen) {
@@ -5124,10 +5354,12 @@ const AddTaskForm = ({ isOpen, onClose, onSave, initialData }) => {
       setTime(initialData.time || "10:00");
       setPriority(initialData.priority || "Sedang");
       setCategory(initialData.category || "Pribadi");
+      setLocation(initialData.location || "");
       setDesc(initialData.desc || "");
     } else if (isOpen) {
       setTitle("");
       setDesc("");
+      setLocation("");
       setPriority("Sedang");
       setCategory("Pribadi");
     }
@@ -5135,7 +5367,7 @@ const AddTaskForm = ({ isOpen, onClose, onSave, initialData }) => {
   if (!isOpen) return null;
 
   const handleSave = () => {
-    if (!title) return alert("Harap isi nama tugas!");
+    if (!title) return alert("Harap isi nama task!");
 
     const dateInt = parseInt(date.split("-")[2], 10);
 
@@ -5149,6 +5381,7 @@ const AddTaskForm = ({ isOpen, onClose, onSave, initialData }) => {
       status: initialData ? initialData.status : "belum",
       priority: priority,
       category: category,
+      location: location || "",
       desc: desc || "Tidak ada detail tambahan.",
       dateInt: dateInt,
       comments: initialData ? initialData.comments : [],
@@ -5170,7 +5403,7 @@ const AddTaskForm = ({ isOpen, onClose, onSave, initialData }) => {
         {/* Centered Title */}
         <div className="text-center px-16 mt-4.5">
           <h2 className="text-[16px] font-extrabold text-slate-800 tracking-tight leading-none">
-            {initialData ? "Edit" : "Catat"} Tugas
+            {initialData ? "Edit" : "Catat"} Task
           </h2>
         </div>
       </header>
@@ -5178,7 +5411,7 @@ const AddTaskForm = ({ isOpen, onClose, onSave, initialData }) => {
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-[12px] font-bold text-slate-600">
-              Judul Tugas
+              Judul Task
             </label>
             <input
               type="text"
@@ -5244,6 +5477,24 @@ const AddTaskForm = ({ isOpen, onClose, onSave, initialData }) => {
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-[12px] font-bold text-slate-600">
+              Lokasi (Opsional)
+            </label>
+            <div className="relative">
+              <MapPin
+                size={18}
+                className="absolute left-4 top-3.5 text-slate-400"
+              />
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Cth: Ruang Rapat Lt. 3, Rumah"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-[14px] font-medium outline-none focus:border-blue-500 focus:bg-white transition-all"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[12px] font-bold text-slate-600">
               Catatan Khusus
             </label>
             <textarea
@@ -5297,7 +5548,7 @@ const QuickAddModal = ({ isOpen, onClose, onOpenForm }) => {
     {
       id: "task",
       icon: ListTodo,
-      label: "Tugas Baru",
+      label: "Task Baru",
       color: "text-amber-600",
       bg: "bg-amber-50",
     },
@@ -5369,6 +5620,7 @@ export default function App() {
     type: "transaction" | "activity";
     id: string;
   } | null>(null);
+  const [isTeamChatOpen, setIsTeamChatOpen] = useState(false);
 
   useEffect(() => {
     const handleFocus = (e: FocusEvent) => {
@@ -5494,8 +5746,7 @@ export default function App() {
 
   const getHeaderTitle = () => {
     if (activeTab === "finance") return "Keuangan";
-    if (activeTab === "activity") return "Jadwal & Tugas";
-    if (activeTab === "team") return null;
+    if (activeTab === "activity") return "Jadwal & Task";
     if (activeTab === "profile") return "Pengaturan";
     return null;
   };
@@ -5563,24 +5814,37 @@ export default function App() {
     showMessage("Komentar berhasil ditambahkan!", "success");
   };
 
+  const handleAddChatMessage = (text: string) => {
+    if (!text.trim()) return;
+    const newChatObj = {
+      id: `c-${Date.now()}`,
+      sender: "u1",
+      text: text.trim(),
+      time: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+      date: "Hari ini",
+    };
+    setData((prev) => ({
+      ...prev,
+      chats: [...(prev.chats || []), newChatObj],
+    }));
+  };
+
   return (
     <div className="h-[100dvh] w-screen bg-slate-900 overflow-hidden">
       <div className="w-full max-w-md mx-auto bg-white h-full relative shadow-2xl flex flex-col shadow-slate-900/40">
-        {activeTab !== "team" && (
-          <AppHeader
-            title={getHeaderTitle() || "Family Hub"}
-            teamData={data.team}
-            onOpenNotif={() => setIsNotifOpen(true)}
-            onOpenProfile={() => setIsSwitchViewerOpen(!isSwitchViewerOpen)}
-            onBack={
-              activeTab === "home" || activeTab === "team"
-                ? null
-                : () => setActiveTab("home")
-            }
-            variant={activeTab === "home" ? "home" : "centered"}
-            isProfileOpen={isSwitchViewerOpen}
-          />
-        )}
+        <AppHeader
+          title={getHeaderTitle() || "Family Hub"}
+          teamData={data.team}
+          onOpenNotif={() => setIsNotifOpen(true)}
+          onOpenProfile={() => setIsSwitchViewerOpen(!isSwitchViewerOpen)}
+          onBack={
+            activeTab === "home"
+              ? null
+              : () => setActiveTab("home")
+          }
+          variant={activeTab === "home" ? "home" : "centered"}
+          isProfileOpen={isSwitchViewerOpen}
+        />
         <main
           className={cn(
             "flex-1 hide-scrollbar relative bg-[#f1f5f9] border-x border-slate-200 shadow-inner transition-all",
@@ -5621,7 +5885,6 @@ export default function App() {
               onToggleTaskStatus={handleToggleTaskStatus}
             />
           )}
-          {activeTab === "team" && <TeamChatView data={data} />}
           {activeTab === "profile" && <ProfileView data={data} />}
         </main>
         <NotificationPanel
@@ -5709,6 +5972,12 @@ export default function App() {
             onAddComment={handleAddComment}
           />
         )}
+        <TeamChatBottomSheet
+          isOpen={isTeamChatOpen}
+          data={data}
+          onClose={() => setIsTeamChatOpen(false)}
+          onSendMessage={handleAddChatMessage}
+        />
         <div className={cn(
           "navbot-container fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 px-5 pb-safe-offset-2 pt-1.5 pb-3 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] z-[420] transition-all duration-300",
           isInputFocused ? "translate-y-28 opacity-0 pointer-events-none" : "translate-y-0"
@@ -5769,16 +6038,16 @@ export default function App() {
 
             {/* Obrolan (Chat) Tab */}
             <button
-              onClick={() => setActiveTab("team")}
+              onClick={() => setIsTeamChatOpen(true)}
               className={cn(
                 "flex flex-col items-center justify-center gap-1 w-[60px] py-1.5 relative transition-all active:scale-95",
-                activeTab === "team" ? "text-blue-600" : "text-slate-400 hover:text-slate-600",
+                isTeamChatOpen ? "text-blue-600" : "text-slate-400 hover:text-slate-600",
               )}
             >
               <div className="relative">
                 <MessageSquare
                   size={24}
-                  strokeWidth={activeTab === "team" ? 2.5 : 2}
+                  strokeWidth={isTeamChatOpen ? 2.5 : 2}
                 />
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 border border-white rounded-full animate-pulse"></span>
               </div>
