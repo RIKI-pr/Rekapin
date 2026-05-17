@@ -2054,6 +2054,12 @@ const ItemDetailModal = ({
 
   const hasComments = item.comments && item.comments.length > 0;
 
+  const getCommentTarget = () => {
+    if (isTask) return { type: "activity", id: `act-tsk-${item.id}` };
+    if (isAct) return { type: "activity", id: `act-evt-${item.id}` };
+    return { type, id: item.id };
+  };
+
   // Filter Riwayat based on localMonth and localSearch
   const historyTransactions = transactions
     ? isPocket
@@ -2662,8 +2668,8 @@ const ItemDetailModal = ({
             )}
           </div>
         )}
-        {/* COMMENTS CARD CONTAINER (Hanya Tampil di Transaksi & Aktivitas, Sesuai Request) */}
-        {(isTrx || isAct) && (
+        {/* COMMENTS CARD CONTAINER (Hanya Tampil di Transaksi, Aktivitas & Tugas, Sesuai Request) */}
+        {(isTrx || isAct || isTask) && (
           <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.03)] border border-slate-200 mb-8 relative z-10">
             <div className="flex justify-between items-center mb-5">
               <h3 className="text-[14px] font-extrabold text-slate-900 flex items-center gap-2 shrink-0">
@@ -2672,7 +2678,10 @@ const ItemDetailModal = ({
               </h3>
               <button
                 onClick={() => {
-                  if (onOpenComments) onOpenComments(type, item.id);
+                  if (onOpenComments) {
+                    const target = getCommentTarget();
+                    onOpenComments(target.type, target.id);
+                  }
                 }}
                 className="px-3.5 py-1.5 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200/60 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm cursor-pointer group"
                 title="Buka Chat Obrolan"
@@ -2692,7 +2701,10 @@ const ItemDetailModal = ({
                     {item.comments.length > 3 && (
                       <div 
                         onClick={() => {
-                          if (onOpenComments) onOpenComments(type, item.id);
+                          if (onOpenComments) {
+                            const target = getCommentTarget();
+                            onOpenComments(target.type, target.id);
+                          }
                         }}
                         className="text-[11px] font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer pb-2 hover:underline w-fit mx-auto"
                       >
@@ -2744,7 +2756,10 @@ const ItemDetailModal = ({
               ) : (
                 <div 
                   onClick={() => {
-                    if (onOpenComments) onOpenComments(type, item.id);
+                    if (onOpenComments) {
+                      const target = getCommentTarget();
+                      onOpenComments(target.type, target.id);
+                    }
                   }}
                   className="text-center py-10 bg-slate-50 hover:bg-slate-100/40 rounded-[24px] border border-slate-200/60 shadow-sm cursor-pointer transition-all flex flex-col items-center justify-center group active:scale-[0.99]"
                 >
