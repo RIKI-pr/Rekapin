@@ -2127,7 +2127,7 @@ const ItemDetailModal = ({
     return "Detail";
   };
   return (
-    <div className="fixed inset-0 z-[410] flex flex-col bg-[#f8fafc] border border-slate-200 animate-in slide-in-from-bottom-full duration-300 overflow-hidden max-w-md mx-auto left-0 right-0 sm:rounded-b-[40px] sm:rounded-t-none">
+    <div className="fixed inset-0 z-[500] flex flex-col bg-[#f8fafc] border border-slate-200 animate-in slide-in-from-bottom-full duration-300 overflow-hidden max-w-md mx-auto left-0 right-0 sm:rounded-b-[40px] sm:rounded-t-none">
       <DetailHeader 
         title={getTitle()} 
         onClose={onClose} 
@@ -3981,7 +3981,7 @@ const FinanceView = ({
         )}
         {/* REFINED FILTER MODAL */}
         {showFilterModal && (
-          <div className="fixed inset-0 z-[400] flex items-end justify-center bg-slate-900/40 backdrop-blur-sm overflow-hidden">
+          <div className="fixed inset-0 z-[500] flex items-end justify-center bg-slate-900/40 backdrop-blur-sm overflow-hidden">
             <div className="absolute inset-0" onClick={() => setShowFilterModal(false)} />
             <div
               style={{
@@ -4371,7 +4371,7 @@ const ActivityView = ({
 
       {/* BOTTOM SHEET FILTER AKTIVITAS */}
       {showFilterModal && (
-        <div className="fixed inset-0 z-[400] flex items-end justify-center bg-slate-900/40 backdrop-blur-sm overflow-hidden">
+        <div className="fixed inset-0 z-[500] flex items-end justify-center bg-slate-900/40 backdrop-blur-sm overflow-hidden">
           <div className="absolute inset-0" onClick={() => setShowFilterModal(false)} />
           <div className="relative w-full max-w-md bg-[#f8fafc] rounded-t-[40px] shadow-2xl flex flex-col overflow-hidden border-t border-slate-200 animate-in slide-in-from-bottom duration-300">
             {/* iOS Notch Notch & Header */}
@@ -4705,7 +4705,7 @@ X`,
     onSave(newTrx, type, initialData ? "edit" : "add");
   };
   return (
-    <div className="absolute inset-0 z-[410] flex flex-col bg-white sm:rounded-b-[40px] sm:rounded-t-none border border-slate-200 animate-in slide-in-from-right-full duration-300">
+    <div className="fixed inset-0 z-[500] flex flex-col bg-white sm:rounded-b-[40px] sm:rounded-t-none border border-slate-200 animate-in slide-in-from-right-full duration-300 max-w-md mx-auto left-0 right-0">
       <header className="sticky top-0 w-full bg-[#f8fafc] z-50 shrink-0 pb-4 relative border-b border-slate-200/80">
         {/* iOS Notch Handle */}
         <div className="w-12 h-1.5 bg-slate-300/80 rounded-full mx-auto mt-3.5" />
@@ -4973,7 +4973,7 @@ const AddActivityForm = ({ isOpen, onClose, onSave, initialData }) => {
     onSave(newAct, "activity", initialData ? "edit" : "add");
   };
   return (
-    <div className="absolute inset-0 z-[410] flex flex-col bg-white sm:rounded-b-[40px] sm:rounded-t-none border border-slate-200 animate-in slide-in-from-bottom-full duration-300">
+    <div className="fixed inset-0 z-[500] flex flex-col bg-white sm:rounded-b-[40px] sm:rounded-t-none border border-slate-200 animate-in slide-in-from-bottom-full duration-300 max-w-md mx-auto left-0 right-0">
       <header className="sticky top-0 w-full bg-[#f8fafc] z-50 shrink-0 pb-4 relative border-b border-slate-200/80">
         {/* iOS Notch Handle */}
         <div className="w-12 h-1.5 bg-slate-300/80 rounded-full mx-auto mt-3.5" />
@@ -5156,7 +5156,7 @@ const AddTaskForm = ({ isOpen, onClose, onSave, initialData }) => {
     onSave(newTask, "task", initialData ? "edit" : "add");
   };
   return (
-    <div className="absolute inset-0 z-[410] flex flex-col bg-white sm:rounded-b-[40px] sm:rounded-t-none border border-slate-200 animate-in slide-in-from-bottom-full duration-300">
+    <div className="fixed inset-0 z-[500] flex flex-col bg-white sm:rounded-b-[40px] sm:rounded-t-none border border-slate-200 animate-in slide-in-from-bottom-full duration-300 max-w-md mx-auto left-0 right-0">
       <header className="sticky top-0 w-full bg-[#f8fafc] z-50 shrink-0 pb-4 relative border-b border-slate-200/80">
         {/* iOS Notch Handle */}
         <div className="w-12 h-1.5 bg-slate-300/80 rounded-full mx-auto mt-3.5" />
@@ -5303,7 +5303,7 @@ const QuickAddModal = ({ isOpen, onClose, onOpenForm }) => {
     },
   ];
   return (
-    <div className="absolute inset-0 z-[400] flex items-end justify-center bg-slate-900/40 backdrop-blur-sm overflow-hidden">
+    <div className="fixed inset-0 z-[500] flex items-end justify-center bg-slate-900/40 backdrop-blur-sm overflow-hidden max-w-md mx-auto left-0 right-0">
       <div className="absolute inset-0" onClick={onClose} />
       <div className="relative w-full bg-slate-50 rounded-t-[40px] shadow-2xl animate-in slide-in-from-bottom-full duration-300 flex flex-col overflow-hidden">
         {/* iOS Notch & Header */}
