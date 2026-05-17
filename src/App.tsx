@@ -1463,7 +1463,7 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
                   e.preventDefault();
                   if (onToggleTaskStatus) onToggleTaskStatus(act.refItem.id);
                 }}
-                className="w-12 h-12 -ml-3 -mt-2.5 flex items-center justify-center cursor-pointer transition-all active:scale-90 shrink-0 z-30 select-none bg-transparent focus:outline-none group/btn"
+                className="w-12 h-12 -ml-3 -mt-2.5 flex items-center justify-center cursor-pointer transition-all active:scale-90 shrink-0 z-30 select-none bg-transparent focus:outline-none"
               >
                 <div
                   className={cn(
@@ -1471,21 +1471,12 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
                     isDoneTask
                       ? "bg-emerald-500 border-emerald-500 text-white shadow-[0_3px_10px_rgba(16,185,129,0.35)] scale-[1.05]"
                       : isOverdue
-                        ? "border-rose-300 bg-rose-50/10 hover:bg-rose-50 hover:border-rose-500 text-transparent"
+                        ? "border-rose-400 bg-white"
                         : isWithinTime
-                          ? "border-amber-300 bg-amber-50/10 hover:bg-amber-50 hover:border-amber-500 text-transparent"
-                          : "border-slate-300 bg-slate-50/10 hover:bg-slate-50 hover:border-slate-400 text-transparent",
+                          ? "border-amber-400 bg-white"
+                          : "border-slate-300 bg-white",
                   )}
                 >
-                  {/* Faint preview checkmark when hovering over unchecked box */}
-                  {!isDoneTask && (
-                    <Check 
-                      size={13} 
-                      strokeWidth={4.5} 
-                      className="absolute opacity-0 group-hover/btn:opacity-40 transition-opacity duration-200 text-slate-400 scale-90" 
-                    />
-                  )}
-
                   {/* High contrast sharp checkmark with rotation when active */}
                   <Check 
                     size={13} 
