@@ -1422,6 +1422,41 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
         {/* Top Header Row: Owner Avatar and Name in Corner, Type Badge on Right */}
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center gap-2">
+            {act.isTask && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  if (onToggleTaskStatus) onToggleTaskStatus(act.refItem.id, selectedDate);
+                }}
+                className="w-7 h-7 -ml-2 -my-2 flex items-center justify-center cursor-pointer transition-all active:scale-90 shrink-0 z-30 select-none bg-transparent focus:outline-none"
+              >
+                <div
+                  className={cn(
+                    "w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300 shadow-sm relative overflow-hidden",
+                    isDoneTask
+                      ? "bg-emerald-500 border-emerald-500 text-white shadow-[0_2px_6px_rgba(16,185,129,0.3)]"
+                      : act.priority === "Tinggi"
+                        ? "border-rose-400 bg-white"
+                        : act.priority === "Sedang"
+                          ? "border-amber-500 bg-white"
+                          : act.priority === "Rendah"
+                            ? "border-blue-400 bg-white"
+                            : "border-slate-300 bg-white",
+                  )}
+                >
+                  <Check 
+                    size={11} 
+                    strokeWidth={4.5} 
+                    className={cn(
+                      "transition-all duration-300 transform", 
+                      isDoneTask ? "scale-100 opacity-100 rotate-0 text-white" : "scale-50 opacity-0 -rotate-12 text-transparent"
+                    )} 
+                  />
+                </div>
+              </button>
+            )}
             <OwnerAvatar
               ownerId={act.owner}
               size={5}
@@ -1494,45 +1529,8 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
 
         {/* Content Area */}
         <div className="space-y-1">
-          {/* Middle Row: Checkbox on Left, Title/Desc Column on Right */}
+          {/* Middle Row: Title/Desc Column */}
           <div className="flex items-start gap-2 relative">
-            {act.isTask && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  if (onToggleTaskStatus) onToggleTaskStatus(act.refItem.id, selectedDate);
-                }}
-                className="w-7 h-7 -ml-0.5 flex items-center justify-center cursor-pointer transition-all active:scale-90 shrink-0 z-30 select-none bg-transparent focus:outline-none"
-              >
-                <div
-                  className={cn(
-                    "w-[18px] h-[18px] rounded-full border flex items-center justify-center transition-all duration-300 shadow-sm relative overflow-hidden",
-                    isDoneTask
-                      ? "bg-emerald-500 border-emerald-500 text-white shadow-[0_2px_6px_rgba(16,185,129,0.3)]"
-                      : act.priority === "Tinggi"
-                        ? "border-rose-400 bg-white"
-                        : act.priority === "Sedang"
-                          ? "border-amber-500 bg-white"
-                          : act.priority === "Rendah"
-                            ? "border-blue-400 bg-white"
-                            : "border-slate-300 bg-white",
-                  )}
-                >
-                  {/* High contrast sharp checkmark with rotation when active */}
-                  <Check 
-                    size={10} 
-                    strokeWidth={4.5} 
-                    className={cn(
-                      "transition-all duration-300 transform", 
-                      isDoneTask ? "scale-100 opacity-100 rotate-0 text-white" : "scale-50 opacity-0 -rotate-12 text-transparent"
-                    )} 
-                  />
-                </div>
-              </button>
-            )}
-
             {/* Title & Description Column */}
             <div className="flex-1 min-w-0 space-y-0.5">
               <h4
