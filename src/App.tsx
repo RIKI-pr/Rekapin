@@ -1320,22 +1320,6 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
   // Clean 24-hour format time string
   const time24 = (act.timeStart || "").replace(/(?:[ ]?(?:AM|PM|am|pm))/gi, "").trim();
 
-  // Clean local Indonesian format date string
-  const formattedDate = (() => {
-    if (!act.refItem || !act.refItem.date) return "";
-    try {
-      const d = new Date(act.refItem.date);
-      if (isNaN(d.getTime())) return act.refItem.date;
-      return d.toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      });
-    } catch (e) {
-      return act.refItem.date;
-    }
-  })();
-
   // Determine if task deadline is overdue or within time
   const isOverdue = (() => {
     if (!act.isTask || act.priority !== "Tinggi" || isDoneTask) return false;
@@ -1353,14 +1337,12 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
     if (isDoneTask) {
       return "bg-slate-50/50 border-slate-200 opacity-60 hover:bg-slate-50/70";
     }
-    if (act.isTask) {
-      if (isDeadline) {
-        return "bg-rose-50/80 border-rose-200 hover:bg-rose-100/40 shadow-[0_4px_16px_rgba(244,63,94,0.06)] hover:border-rose-300";
-      }
-      // Regular active tasks are orange/amber
+    if (isOverdue) {
+      return "bg-rose-50/80 border-rose-200 hover:bg-rose-100/40 shadow-[0_4px_16px_rgba(244,63,94,0.06)] hover:border-rose-300";
+    }
+    if (isWithinTime) {
       return "bg-amber-50/80 border-amber-200 hover:bg-amber-100/40 shadow-[0_4px_16px_rgba(245,158,11,0.06)] hover:border-amber-300";
     }
-    // Non-task activities remain clean white
     return "bg-white border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:border-slate-300/80";
   })();
 
@@ -1455,33 +1437,17 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
               </span>
             )}
 
-            {/* Top-Right Corner Type Badge */}
-            <span
-              className={cn(
-                "px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider border shrink-0 shadow-sm flex items-center gap-1",
-                isDoneTask
-                  ? "bg-slate-100 text-slate-500 border-slate-200"
-                  : isDeadline
-                    ? isOverdue
-                      ? "bg-rose-100 text-rose-700 border-rose-300"
-                      : "bg-amber-100 text-amber-700 border-amber-300"
-                    : isRegularTask
-                      ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                      : cn(typeColor.light, typeColor.text, typeColor.border),
-              )}
-            >
-              {isDeadline ? (
-                <>
-                  <span className="text-[10px] animate-pulse">🚨</span> PERINGATAN
-                </>
-              ) : isRegularTask ? (
-                <>
-                  <span className="text-[10px]">📝</span> TASK
-                </>
-              ) : (
-                act.type
-              )}
-            </span>
+            {/* Top-Right Corner Type Badge (Only rendered for non-task items, keeping UI clean for tasks) */}
+            {!act.isTask && (
+              <span
+                className={cn(
+                  "px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider border shrink-0 shadow-sm flex items-center gap-1",
+                  cn(typeColor.light, typeColor.text, typeColor.border),
+                )}
+              >
+                {act.type}
+              </span>
+            )}
           </div>
         </div>
 
@@ -1591,7 +1557,7 @@ const ActivityCardItem = ({ act, team, onOpenDetail, onOpenComments, onToggleTas
                   )}
                 >
                   <Clock size={10} strokeWidth={2.5} />
-                  {isDeadline ? `DEADLINE: ${formattedDate}` : `TARGET: ${formattedDate}`}
+                  {isDeadline ? `DEADLINE: JAM ${time24}` : `TARGET TUGAS: JAM ${time24}`}
                 </span>
               )}
             </div>
